@@ -10,6 +10,9 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Initial public release as a standalone package, extracted from
   [`speced/respec` PR #5168](https://github.com/speced/respec/pull/5168).
+- Explainer support: authoring guide section and a worked profile
+  (`examples/example-explainer/`) that enforces the structural skeleton from
+  [W3C Explainer Explainer](https://www.w3.org/TR/explainer-explainer/).
 - Stdio MCP server (`respec-mcp`) exposing five tools: `respec_list_profiles`,
   `respec_scaffold`, `respec_preflight`, `respec_validate`, `respec_build`.
 - MCP resources for the authoring guide (`respec-mcp://authoring-guide`) and

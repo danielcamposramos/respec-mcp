@@ -1,0 +1,43 @@
+{
+  "profile_id": "example-explainer",
+  "label": "Example Explainer (TAG-review ready)",
+  "group_type": "explainer",
+  "allowed_statuses": ["unofficial", "CG-DRAFT"],
+  "default_status": "unofficial",
+  "source_root": "explainer",
+  "build_root": "explainer/build",
+  "default_source": "explainer/index.html",
+  "status_templates": {
+    "unofficial": "respec-mcp/templates/explainer.html",
+    "CG-DRAFT": "respec-mcp/templates/explainer.html"
+  },
+  "respec_defaults": {
+    "title": "Example Feature Explainer",
+    "shortName": "example-explainer",
+    "editors": [
+      {
+        "name": "Example Editor",
+        "company": "Example Org"
+      }
+    ]
+  },
+  "required_sections": [
+    "Discussion Venues",
+    "User-Facing Problem",
+    "Goals",
+    "Non-Goals",
+    "Proposed Approach",
+    "Use Cases",
+    "Alternatives Considered",
+    "Accessibility Considerations",
+    "Internationalization Considerations",
+    "Privacy Considerations",
+    "Security Considerations"
+  ],
+  "required_links": [],
+  "forbidden_phrases": [
+    "W3C Recommendation",
+    "W3C Standard",
+    "W3C Candidate Recommendation"
+  ]
+}

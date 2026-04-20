@@ -33,7 +33,9 @@ Choose the document type before drafting:
 - `CG-FINAL`: stabilized Community Group final report.
 - Transition/support report: a CG draft report whose purpose is to prepare
   adoption by a Working Group or another standards-track venue.
-- Explainer: a problem-and-proposal document for design discussion.
+- **Explainer**: a living, user-facing problem-and-proposal document used for
+  TAG early design review and to guide later specification work. See the
+  [Explainers](#explainers) section below.
 
 Do not confuse these types.
 
@@ -41,7 +43,9 @@ In particular:
 
 - A Community Group report is **not** a W3C Standard.
 - A transition report is **not** itself a standards-track specification.
-- An explainer should not be mislabeled as the normative specification.
+- An explainer is **not** the normative specification — it is the document
+  readers (including the TAG and novices to the area) use to understand why
+  the feature exists and what problem it solves.
 
 ## Community Group Report Requirements
 
@@ -78,6 +82,71 @@ the following explicit:
 
 Do not write a transition report as if a Working Group decision were already
 made.
+
+## Explainers
+
+When the target document is an explainer (for TAG early design review or to
+anchor group discussion around a new feature), follow the W3C explainer
+guidance: <https://www.w3.org/TR/explainer-explainer/>.
+
+### When to write an explainer
+
+Write an explainer when you are:
+
+- Proposing a new web platform feature and want to gather feedback before, or
+  while, drafting a specification.
+- Preparing a TAG early design review request.
+- Seeking consensus on scope and approach before writing normative text.
+
+An explainer is a **living** document. It evolves from initial goals and
+sketches through consensus-building and continues to serve readers after
+specification work begins.
+
+### Required/recommended sections
+
+By the time an explainer is ready for TAG review, it should contain:
+
+1. **Discussion Venues** — links where readers can discuss (issue tracker,
+   mailing list, chat).
+2. **User-Facing Problem** — describe the problem from the end-user's
+   perspective, not from an implementer's.
+3. **Goals / Non-Goals** — what the feature is and is not trying to do.
+4. **Proposed Approach** — the solution, with code examples.
+5. **Practical Use Cases** — concrete scenarios demonstrating the proposal.
+6. **Alternatives Considered** — other ways the problem might be solved and
+   why you prefer your proposal. Readers do not share your context — explain
+   why rejected options are inferior.
+7. **Accessibility, Internationalization, Privacy, and Security
+   Considerations** — design implications for each horizontal concern.
+8. Optional: stakeholder feedback, user research, dependencies on other
+   features.
+
+### Explainer anti-patterns
+
+- **Avoid jargon and length.** Use common words so readers who are not native
+  or fluent English speakers can follow. Be concise.
+- **Don't obscure current vs. proposed state.** A reader should be able to
+  distinguish today's context from your proposed changes at a glance.
+- **Don't skip alternatives.** Readers lack your history with the problem;
+  explain the design space, not only the chosen point.
+- **Don't let the explainer rot.** As content migrates into a specification
+  or Group Note, replace the moved text with a link to the spec — do not
+  leave duplicated, drifting prose.
+- **Don't neglect accessibility of the explainer itself.** Provide text
+  alternatives for images via `alt` text or descriptions.
+
+### Explainer ⇄ spec relationship
+
+Once reasonable consensus emerges on approach and design, use the explainer
+to guide spec writing. Sections can move (or be copied with links back) into
+the specification. Keep the introduction, use cases, and examples accessible
+to novices so wide reviewers can participate without first reading the spec.
+
+If the target is an explainer, your MCP workflow is the same as for a CG
+report — list_profiles, scaffold or edit, preflight, validate, build — but
+the profile's `required_sections` should include the explainer sections
+above, and `forbidden_phrases` should include spec-like status claims
+("W3C Recommendation", etc.) that an explainer must not make.
 
 ## Structural Patterns to Reuse
 

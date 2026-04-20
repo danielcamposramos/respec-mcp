@@ -6,9 +6,11 @@
 
 A stdio **Model Context Protocol** server that wraps
 [ReSpec](https://respec.org/) rendering and adds repo-local profile
-discovery, so AI agents can scaffold, preflight, validate, and build W3C /
-Community Group reports using policies that live in the spec repository
-itself — not in the MCP server.
+discovery, so AI agents can scaffold, preflight, validate, and build
+W3C-style documents — Community Group reports, final reports, and
+[explainers](https://www.w3.org/TR/explainer-explainer/) for TAG early
+design review — using policies that live in the spec repository itself, not
+in the MCP server.
 
 > **Status:** incubating. See the [inline W3C discussion](https://github.com/speced/respec/pull/5168)
 > that led to this package being extracted from ReSpec core.
@@ -25,13 +27,13 @@ server iterate on profile/policy design and security hardening independently.
 
 Five tools over stdio:
 
-| Tool                    | What it does                                         |
-| ----------------------- | ---------------------------------------------------- |
-| `respec_list_profiles`  | Lists repo-local profiles and their allowed statuses. |
-| `respec_scaffold`       | Creates a new source document from a profile template. |
-| `respec_preflight`      | Fast source-only policy check (sections, links, forbidden phrases). No render. |
-| `respec_validate`       | Full ReSpec render via Puppeteer with diagnostics. No write. |
-| `respec_build`          | Full render and writes static HTML to the build root. |
+| Tool                   | What it does                                                                    |
+| ---------------------- | ------------------------------------------------------------------------------- |
+| `respec_list_profiles` | Lists repo-local profiles and their allowed statuses.                           |
+| `respec_scaffold`      | Creates a new source document from a profile template.                          |
+| `respec_preflight`     | Fast source-only policy check (sections, links, forbidden phrases). No render.  |
+| `respec_validate`      | Full ReSpec render via Puppeteer with diagnostics. No write.                    |
+| `respec_build`         | Full render and writes static HTML to the build root.                           |
 
 Two MCP resources:
 
@@ -94,7 +96,11 @@ npx -y respec-mcp --repo-root /path/to/spec-repo
    }
    ```
 
-A complete working example lives under [examples/example-cg/](./examples/example-cg).
+Two complete worked examples ship in the repo:
+
+- [`examples/example-cg/`](./examples/example-cg) — Community Group report.
+- [`examples/example-explainer/`](./examples/example-explainer) — W3C
+  explainer skeleton following [TR/explainer-explainer/](https://www.w3.org/TR/explainer-explainer/).
 
 ## Security
 

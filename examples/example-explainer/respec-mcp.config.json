@@ -1,0 +1,6 @@
+{
+  "default_profile": "example-explainer",
+  "profile_directory": "respec-mcp/profiles",
+  "source_root": "explainer",
+  "build_root": "explainer/build"
+}
