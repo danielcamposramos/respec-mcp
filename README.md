@@ -102,6 +102,109 @@ Two complete worked examples ship in the repo:
 - [`examples/example-explainer/`](./examples/example-explainer) — W3C
   explainer skeleton following [TR/explainer-explainer/](https://www.w3.org/TR/explainer-explainer/).
 
+## Wiring into MCP clients
+
+All snippets below use `npx -y respec-mcp` (works once the package is on
+npm). For local development before publishing, swap
+`"command": "npx", "args": ["-y", "respec-mcp", ...]` for
+`"command": "node", "args": ["/absolute/path/to/respec-mcp/bin/respec-mcp.js", ...]`.
+
+Replace `/path/to/spec-repo` with the absolute path to your W3C / CG spec
+repo (the one containing `respec-mcp.config.json`).
+
+### Claude Code (`~/.claude/settings.json`)
+
+Add a `respec-mcp` entry under `mcpServers`:
+
+```json
+{
+  "mcpServers": {
+    "respec-mcp": {
+      "command": "npx",
+      "args": ["-y", "respec-mcp", "--repo-root", "/path/to/spec-repo"]
+    }
+  }
+}
+```
+
+Reload with `/mcp` or restart Claude Code.
+
+### Codex CLI (`~/.codex/config.toml`)
+
+```toml
+[mcp_servers.respec-mcp]
+command = "npx"
+args = ["-y", "respec-mcp", "--repo-root", "/path/to/spec-repo"]
+enabled = true
+```
+
+### Cline (VS Code extension `saoudrizwan.claude-dev`)
+
+Edit
+`~/.config/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json`
+(or use Cline's **MCP Servers → Configure** UI):
+
+```json
+{
+  "mcpServers": {
+    "respec-mcp": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "respec-mcp", "--repo-root", "/path/to/spec-repo"],
+      "disabled": false,
+      "autoApprove": [
+        "respec_list_profiles",
+        "respec_preflight",
+        "respec_validate"
+      ],
+      "timeout": 300
+    }
+  }
+}
+```
+
+Only the read-only tools are auto-approved. `respec_scaffold` and
+`respec_build` write to disk and will prompt.
+
+### Roo Code (VS Code extension `rooveterinaryinc.roo-cline`)
+
+Edit
+`~/.config/Code/User/globalStorage/rooveterinaryinc.roo-cline/settings/mcp_settings.json`.
+Same shape as Cline, except Roo spells the transport type with a hyphen
+in its HTTP variant — for stdio the `type` key is still `"stdio"`:
+
+```json
+{
+  "mcpServers": {
+    "respec-mcp": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "respec-mcp", "--repo-root", "/path/to/spec-repo"],
+      "disabled": false,
+      "autoApprove": [
+        "respec_list_profiles",
+        "respec_preflight",
+        "respec_validate"
+      ],
+      "timeout": 300
+    }
+  }
+}
+```
+
+### Verifying the handshake
+
+From a terminal, send an `initialize` + `tools/list` over stdio:
+
+```bash
+printf '%s\n%s\n' \
+  '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-03-26","capabilities":{},"clientInfo":{"name":"probe","version":"0"}}}' \
+  '{"jsonrpc":"2.0","id":2,"method":"tools/list"}' \
+  | npx -y respec-mcp --repo-root /path/to/spec-repo
+```
+
+You should see `serverInfo.name: "respec-mcp"` and the five tools listed.
+
 ## Security
 
 Tool inputs in MCP are LLM-controlled and can be influenced by prompt
