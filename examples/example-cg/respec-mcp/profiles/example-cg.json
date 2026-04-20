@@ -1,0 +1,37 @@
+{
+  "profile_id": "example-cg",
+  "label": "Example Community Group",
+  "group_type": "cg",
+  "allowed_statuses": ["CG-DRAFT", "CG-FINAL"],
+  "default_status": "CG-DRAFT",
+  "source_root": "reports/source",
+  "build_root": "reports/build",
+  "default_source": "reports/source/index.html",
+  "status_templates": {
+    "CG-DRAFT": "respec-mcp/templates/cg-draft.html",
+    "CG-FINAL": "respec-mcp/templates/cg-final.html"
+  },
+  "respec_defaults": {
+    "title": "Example Community Group Report",
+    "shortName": "example-spec",
+    "group": "cg/example",
+    "editors": [
+      {
+        "name": "Example Editor",
+        "company": "Example Org"
+      }
+    ]
+  },
+  "required_sections": [
+    "Abstract",
+    "Introduction",
+    "Use Cases",
+    "Security Considerations",
+    "Privacy Considerations"
+  ],
+  "required_links": [
+    "https://www.w3.org/community/example/",
+    "https://github.com/example/spec"
+  ],
+  "forbidden_phrases": ["W3C Recommendation"]
+}

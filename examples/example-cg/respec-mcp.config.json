@@ -1,0 +1,10 @@
+{
+  "default_profile": "example-cg",
+  "profile_directory": "respec-mcp/profiles",
+  "source_root": "reports/source",
+  "build_root": "reports/build",
+  "template_defaults": {
+    "github": "example/spec",
+    "latestVersion": "https://example.test/spec/"
+  }
+}

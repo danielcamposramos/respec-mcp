@@ -1,0 +1,66 @@
+{
+  "name": "respec-mcp",
+  "version": "0.1.0",
+  "description": "Stdio MCP server that wraps ReSpec rendering with repo-local profile/policy discovery.",
+  "keywords": [
+    "respec",
+    "mcp",
+    "model-context-protocol",
+    "w3c",
+    "community-group",
+    "specifications"
+  ],
+  "license": "MIT",
+  "author": "Daniel Ramos <danielcamposramos>",
+  "type": "module",
+  "main": "./src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./server": "./src/server.js",
+    "./core": "./src/core.js"
+  },
+  "bin": {
+    "respec-mcp": "bin/respec-mcp.js"
+  },
+  "files": [
+    "bin/",
+    "src/",
+    "docs/",
+    "examples/",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "test": "jasmine --config=tests/jasmine.json",
+    "test:unit": "jasmine --config=tests/jasmine-unit.json",
+    "test:integration": "jasmine --config=tests/jasmine-integration.json",
+    "start": "node bin/respec-mcp.js",
+    "lint": "eslint src bin tests"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.21.0",
+    "linkedom": "^0.18.5",
+    "respec": "^35.9.0",
+    "sade": "^1.8.1",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "eslint": "^9.15.0",
+    "jasmine": "^5.5.0"
+  },
+  "engines": {
+    "node": ">=20.11"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/danielcamposramos/respec-mcp.git"
+  },
+  "homepage": "https://github.com/danielcamposramos/respec-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/danielcamposramos/respec-mcp/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

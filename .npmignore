@@ -1,0 +1,11 @@
+node_modules/
+tests/
+.github/
+.vscode/
+.idea/
+coverage/
+Dockerfile
+.dockerignore
+.gitignore
+.eslintrc*
+eslint.config.*
