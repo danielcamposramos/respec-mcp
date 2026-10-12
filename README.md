@@ -1,5 +1,7 @@
 # respec-mcp
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23309002.svg)](https://doi.org/10.5281/zenodo.23309002)
+
 [![CI](https://github.com/danielcamposramos/respec-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/danielcamposramos/respec-mcp/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/respec-mcp.svg)](https://www.npmjs.com/package/respec-mcp)
 [![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
