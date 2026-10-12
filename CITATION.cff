@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite it as below."
+type: software
+title: "respec-mcp: an MCP server for ReSpec"
+abstract: "A stdio MCP server that wraps ReSpec, with repo-local profile and policy discovery, for W3C and Community Group reports and explainers. Extracted from speced/respec#5168."
+authors:
+  - family-names: "Ramos"
+    given-names: "Daniel Campos"
+    orcid: "https://orcid.org/0009-0001-4546-8673"
+license: MIT
+repository-code: "https://github.com/danielcamposramos/respec-mcp"
+keywords:
+  - "ReSpec"
+  - "W3C"
+  - "Community Group"
+  - "specifications"
+  - "MCP"
+  - "Model Context Protocol"
