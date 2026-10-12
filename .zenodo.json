@@ -1,0 +1,28 @@
+{
+  "title": "respec-mcp: an MCP server for ReSpec",
+  "description": "A stdio MCP server that wraps ReSpec, with repo-local profile and policy discovery, for W3C and Community Group reports and explainers. Extracted from speced/respec#5168.",
+  "creators": [
+    {
+      "name": "Ramos, Daniel Campos",
+      "orcid": "0009-0001-4546-8673"
+    }
+  ],
+  "license": "mit",
+  "upload_type": "software",
+  "access_right": "open",
+  "keywords": [
+    "ReSpec",
+    "W3C",
+    "Community Group",
+    "specifications",
+    "MCP",
+    "Model Context Protocol"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/speced/respec/pull/5168",
+      "relation": "isDerivedFrom",
+      "scheme": "url"
+    }
+  ]
+}
