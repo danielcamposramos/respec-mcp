@@ -41,7 +41,7 @@ runs:
       if: inputs.mode != 'preflight'
       shell: bash
       working-directory: ${{ github.action_path }}
-      run: npx --no-install puppeteer browsers install chrome --install-deps
+      run: npx --no-install puppeteer browsers install chrome
     - name: Check document policy and rendering
       id: check
       shell: bash

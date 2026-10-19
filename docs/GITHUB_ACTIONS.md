@@ -27,7 +27,7 @@ jobs:
           sources: |
             reports/source/index.html
       - name: Save check evidence
-        if: always()
+        if: always() && steps.editorial.outputs.report != ''
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: editorial-checks
