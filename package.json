@@ -1,14 +1,16 @@
 {
   "name": "respec-mcp",
-  "version": "0.1.0",
-  "description": "Stdio MCP server that wraps ReSpec rendering with repo-local profile/policy discovery.",
+  "version": "0.2.0",
+  "description": "Human-led editorial checks for W3C documents: repository policy, ReSpec validation, GitHub Actions and MCP guidance.",
   "keywords": [
     "respec",
     "mcp",
     "model-context-protocol",
     "w3c",
     "community-group",
-    "specifications"
+    "specifications",
+    "github-actions",
+    "validation"
   ],
   "license": "MIT",
   "author": "Daniel Ramos <danielcamposramos>",
@@ -20,13 +22,17 @@
     "./core": "./src/core.js"
   },
   "bin": {
-    "respec-mcp": "bin/respec-mcp.js"
+    "respec-mcp": "bin/respec-mcp.js",
+    "respec-check": "bin/respec-check.js"
   },
   "files": [
     "bin/",
     "src/",
     "docs/",
-    "examples/",
+    "skills/",
+    "examples/*/respec-mcp.config.json",
+    "examples/*/respec-mcp/",
+    "examples/*/README.md",
     "README.md",
     "LICENSE",
     "CHANGELOG.md"
@@ -36,10 +42,11 @@
     "test:unit": "jasmine --config=tests/jasmine-unit.json",
     "test:integration": "jasmine --config=tests/jasmine-integration.json",
     "start": "node bin/respec-mcp.js",
-    "lint": "eslint src bin tests"
+    "lint": "eslint src bin scripts tests"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.21.0",
+    "acorn": "^8.19.0",
     "linkedom": "^0.18.5",
     "respec": "^35.9.0",
     "sade": "^1.8.1",

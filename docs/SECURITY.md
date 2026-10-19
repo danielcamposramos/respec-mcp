@@ -5,13 +5,11 @@ agent). Every tool input should be treated as adversarial — not because the
 user is malicious, but because document content processed by the LLM may
 contain prompt-injection that manipulates tool calls.
 
-This document describes the trust boundaries and the guarantees the server
-enforces.
+This document describes input checks and their limits. The checker is not a sandbox for untrusted repositories or browser code.
 
 ## Trust boundary: the repo root
 
-The `--repo-root` CLI flag defines the one and only boundary. All tool
-operations must read from, write to, or navigate to paths inside this root.
+The `--repo-root` CLI flag defines the one and only boundary. File arguments accepted by the tools must resolve inside this root. This is an input boundary, not an operating-system sandbox.
 
 - Relative paths (`reports/source/index.html`) are resolved against the root.
 - Absolute paths are allowed only if they already resolve inside the root.
@@ -20,6 +18,7 @@ operations must read from, write to, or navigate to paths inside this root.
   rejected.
 - Paths containing `..` that escape the root are rejected.
 - Null bytes in paths are rejected.
+- Existing symlinks and symlinked parents of new paths are resolved before checking containment, including dangling symlink targets. Concurrent filesystem changes can still race these checks; use an isolated checkout for untrusted input.
 
 The `repo_root` field is **not** part of the tool input schema. An MCP client
 cannot override the CLI-provided boundary per call. If you need to operate on
@@ -27,12 +26,9 @@ multiple repositories, run multiple server instances.
 
 ## Puppeteer navigation
 
-`respec_validate` and `respec_build` drive ReSpec through a Puppeteer-hosted
-Chromium instance. The URL Chromium navigates to is always a `file://` URL
-derived from a path inside the repo root.
+`respec_validate` and `respec_build` execute document JavaScript in Chromium. By default a temporary server bound to `127.0.0.1` serves the selected source, repository assets and installed ReSpec bundles, including the highlighter. It uses an ephemeral port and shuts down after rendering. Repository asset paths pass the same containment checks; this is not an authenticated file server and other local processes can reach it while it runs.
 
-This prevents a scenario where an attacker-controlled document convinces the
-LLM to pass an external URL, causing Chromium to navigate to an attacker host.
+With local bundles disabled, rendering uses a `file://` source. In either mode the API rejects externally supplied source URLs. Documents can still load remote resources, execute scripts and make network requests. Repository containment does not make hostile document JavaScript safe. Run untrusted PRs on disposable runners without secrets or privileged tokens, and review any use of `--disable-sandbox`. The supplied Action uses this option on GitHub-hosted Linux runners; it is not a recommendation for a privileged workstation service.
 
 ## Prototype pollution
 
@@ -59,7 +55,7 @@ Zod validates the shape of every tool input. On top of that, the server:
   sensitive files and the profile is configured to allow writing the output
   over them, the server will honour that. Write paths are bounded by the repo
   root, not by "only inside `build/`".
-- **ReSpec's own behaviour.** ReSpec can fetch external resources during
+- **Document scripts and ReSpec's own behaviour.** ReSpec can fetch external resources during
   rendering (cross-refs, biblio data). Network isolation at that layer is the
   operator's responsibility (run Docker without network, run under a sandbox,
   etc.).

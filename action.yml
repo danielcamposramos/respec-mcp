@@ -1,0 +1,56 @@
+name: ReSpec editorial checks
+description: Check repository editorial rules and ReSpec diagnostics, with a review summary and JSON evidence.
+author: Daniel Ramos
+branding:
+  icon: check-circle
+  color: blue
+inputs:
+  repo-root:
+    description: Specification repository root, relative to the workspace.
+    default: '.'
+  sources:
+    description: One source path per line, relative to repo-root. Omit for the profile default.
+    default: ''
+  profile:
+    description: Repository profile ID. Omit for the repository default.
+    default: ''
+  mode:
+    description: both, preflight, or validate.
+    default: both
+  fail-on-warnings:
+    description: Whether ReSpec warnings fail the check.
+    default: 'false'
+  timeout:
+    description: Render timeout per document in milliseconds.
+    default: '120000'
+outputs:
+  report:
+    description: Absolute path to the JSON evidence file, including on check failure.
+    value: ${{ steps.check.outputs.report }}
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+      with:
+        node-version: '24'
+    - name: Install the checker from its locked dependencies
+      shell: bash
+      working-directory: ${{ github.action_path }}
+      run: npm ci --omit=dev --ignore-scripts
+    - name: Install Chrome for full validation
+      if: inputs.mode != 'preflight'
+      shell: bash
+      working-directory: ${{ github.action_path }}
+      run: npx --no-install puppeteer browsers install chrome --install-deps
+    - name: Check document policy and rendering
+      id: check
+      shell: bash
+      env:
+        RESPEC_ACTION_PATH: ${{ github.action_path }}
+        RESPEC_REPO_ROOT: ${{ inputs.repo-root }}
+        RESPEC_SOURCES: ${{ inputs.sources }}
+        RESPEC_PROFILE: ${{ inputs.profile }}
+        RESPEC_MODE: ${{ inputs.mode }}
+        RESPEC_WARNINGS: ${{ inputs.fail-on-warnings }}
+        RESPEC_TIMEOUT: ${{ inputs.timeout }}
+      run: node "$RESPEC_ACTION_PATH/scripts/action-runner.js"

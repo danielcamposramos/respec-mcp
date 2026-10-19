@@ -89,11 +89,19 @@ In MCP settings:
 The Docker image runs as a non-root user and bakes `--disable-sandbox` into
 the ENTRYPOINT so Chromium starts cleanly under an unprivileged UID.
 
-### Direct CLI (for scripting or CI)
+## One-shot checks for people and CI
 
 ```bash
-node bin/respec-mcp.js --repo-root /path/to/spec-repo
+respec-check --repo-root /path/to/spec-repo --profile example-cg reports/source/index.html
+respec-check --mode preflight --format json reports/source/index.html
+respec-check --report .respec-check/report.json --github reports/source/index.html
 ```
+
+From a checkout, use `node bin/respec-check.js` instead of `respec-check`. With no source arguments, the checker uses the profile's default source. The default mode runs both preflight and full validation. `--mode validate` runs only the renderer. `--status` asserts the actual document status; it does not rewrite the document. `--fail-on-warnings` makes ReSpec warnings blocking. `--disable-sandbox` is for isolated CI/container use, and `--timeout` is the per-document render timeout in milliseconds.
+
+Exit codes: **0** means the requested checks passed, **1** means policy/diagnostic failures or unresolved preflight checks, and **2** means configuration, file-access or rendering failure. Every selected document is assessed. `--format json` remains machine-readable even with `--github`, whose annotations go to stderr and summary to `GITHUB_STEP_SUMMARY`. Report paths must remain inside the repository. The MCP server command still starts a long-running stdio server; it is not a CI check command.
+
+Read [GitHub Actions](GITHUB_ACTIONS.md) for a complete workflow and [W3C skills](W3C_SKILLS.md) for non-specification document guidance.
 
 ## Troubleshooting
 
@@ -106,3 +114,5 @@ node bin/respec-mcp.js --repo-root /path/to/spec-repo
 - **Chromium fails to start in Docker** — The provided Dockerfile bakes
   `--disable-sandbox`. If you build a custom image, either run as non-root
   with `--disable-sandbox` or give the container `SYS_ADMIN` capability.
+
+Document skills are listed at `respec-mcp://skills`; read `respec-mcp://skill/{skill_id}` for one skill with shared multilingual guidance. See [the skill catalog](W3C_SKILLS.md).

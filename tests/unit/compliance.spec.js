@@ -17,6 +17,12 @@ const HTML = `<!doctype html>
 </html>`;
 
 describe("compliance.checkCompliance", () => {
+  it("checks real source headings and ReSpec-generated section markers before rendering", () => {
+    const source = `<section id="abstract"><p>Summary.</p></section><section id="sotd"><p>Draft.</p></section><h2>Introduction</h2>`;
+    const profile = { required_sections: ["Abstract", "Status of This Document", "Introduction"] };
+    expect(checkCompliance({ sourceText: source, profile }).required_sections_missing).toEqual([]);
+    expect(checkCompliance({ sourceText: source, html: "<h2>Introduction</h2>", profile }).required_sections_missing).toEqual(["Abstract", "Status of This Document"]);
+  });
   it("detects required sections via headings, not substring match", () => {
     const result = checkCompliance({
       html: HTML,

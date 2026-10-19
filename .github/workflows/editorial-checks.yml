@@ -1,0 +1,50 @@
+name: Editorial checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  examples:
+    name: ReSpec checks (${{ matrix.example }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        example: [example-cg, example-explainer]
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: '24'
+      - run: npm ci --ignore-scripts
+      - name: Scaffold the worked example
+        env:
+          RESPEC_EXAMPLE: ${{ matrix.example }}
+        run: |
+          node --input-type=module <<'JS'
+          import path from 'node:path';
+          import { scaffoldSource } from './src/core.js';
+          await scaffoldSource({}, { repoRoot: path.resolve('examples', process.env.RESPEC_EXAMPLE) });
+          JS
+      - name: Check the example through the reusable Action
+        id: editorial
+        uses: ./
+        with:
+          repo-root: examples/${{ matrix.example }}
+      - name: Save the full check evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: editorial-checks-${{ matrix.example }}
+          path: ${{ steps.editorial.outputs.report }}
+          include-hidden-files: true
+          if-no-files-found: warn

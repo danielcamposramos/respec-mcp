@@ -174,6 +174,19 @@ describe("core: repo-local discovery and scaffolding", () => {
     expect(result.compliance.required_sections_missing).toContain("Introduction");
   });
 
+  it("preflightSpec accepts a complete source and records the actual policy", async () => {
+    const created = await scaffoldSource({ output: "reports/source/complete.html" }, { repoRoot: root });
+    const checked = await preflightSpec({ source: "reports/source/complete.html" }, { repoRoot: root });
+    expect(checked.compliance.valid).toBeTrue();
+    expect(checked.compliance.document_status).toBe("CG-DRAFT");
+    expect(checked.policy.profile_sha256).toBe(created.policy.profile_sha256);
+    expect(checked.policy.profile_sha256.length).toBe(64);
+  });
+
+  it("cannot change document status through scaffold overrides", async () => {
+    await expectAsync(scaffoldSource({ overrides: { specStatus: "REC" } }, { repoRoot: root })).toBeRejectedWithError(/status input/);
+  });
+
   it("preflightSpec flags forbidden phrases with word boundaries", async () => {
     await writeFile(
       path.join(root, "reports/source/phrase.html"),

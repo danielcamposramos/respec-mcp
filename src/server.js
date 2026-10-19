@@ -6,11 +6,13 @@ import { z } from "zod";
 import {
   AUTHORING_GUIDE_FILENAME,
   buildSpec,
+  getProfile,
   listProfiles,
   preflightSpec,
   scaffoldSource,
   validateSpec,
 } from "./core.js";
+import { listSkills, readSkill } from "./skills.js";
 
 const docsDir = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -37,7 +39,7 @@ export function createReSpecMcpServer(options = {}) {
 
   const server = new McpServer({
     name: "respec-mcp",
-    version: options.version || "0.1.0",
+    version: options.version || "0.2.0",
   });
 
   const toolOptions = {
@@ -68,7 +70,8 @@ export function createReSpecMcpServer(options = {}) {
       title: "Scaffold ReSpec Source",
       description:
         "Creates a ReSpec source document from a repo-local profile and " +
-        "status-specific template. Paths must stay within the configured repo root.",
+        "status-specific template. Paths must stay within the configured repo root. " +
+        "For authoring, read respec-mcp://skills and the relevant skill; authors may explain in their own language.",
       inputSchema: renderInput,
     },
     async input => formatResult(await scaffoldSource(input, toolOptions))
@@ -115,9 +118,9 @@ export function createReSpecMcpServer(options = {}) {
     "authoring-guide",
     "respec-mcp://authoring-guide",
     {
-      title: "ReSpec MCP LLM Authoring Guide",
+      title: "ReSpec MCP Human-Led Authoring Guide",
       description:
-        "Guidance for LLMs producing W3C / Community Group reports via this MCP.",
+        "Human-led editorial guidance, including optional native-language discussion and faithful English drafting.",
       mimeType: "text/markdown",
     },
     async uri => {
@@ -125,12 +128,13 @@ export function createReSpecMcpServer(options = {}) {
         path.join(docsDir, AUTHORING_GUIDE_FILENAME),
         "utf-8"
       );
+      const principles = await readFile(path.join(docsDir, "EDITORIAL_PRINCIPLES.md"), "utf-8");
       return {
         contents: [
           {
             uri: uri.href,
             mimeType: "text/markdown",
-            text,
+            text: `${principles}\n\n${text}`,
           },
         ],
       };
@@ -157,11 +161,7 @@ export function createReSpecMcpServer(options = {}) {
       mimeType: "application/json",
     },
     async (uri, { profile_id }) => {
-      const result = await listProfiles(toolOptions.repoRoot);
-      const profile = result.profiles.find(p => p.profile_id === profile_id);
-      if (!profile) {
-        throw new Error(`Profile "${profile_id}" not found.`);
-      }
+      const profile = await getProfile(toolOptions.repoRoot, profile_id);
       return {
         contents: [
           {
@@ -173,6 +173,20 @@ export function createReSpecMcpServer(options = {}) {
       };
     }
   );
+
+  server.registerResource("document-skills", "respec-mcp://skills", {
+    title: "W3C document skills and tool routing",
+    description: "Choose guidance for explainers, reports, reviews, charters, publication, meeting records and presentations. Guidance is separate from automated validation.",
+    mimeType: "application/json",
+  }, async uri => ({ contents: [{ uri: uri.href, mimeType: "application/json", text: JSON.stringify(await listSkills(), null, 2) }] }));
+
+  server.registerResource("document-skill", new ResourceTemplate("respec-mcp://skill/{skill_id}", {
+    list: async () => ({ resources: (await listSkills()).skills.map(skill => ({
+      uri: `respec-mcp://skill/${skill.id}`, name: skill.title,
+      description: skill.description, mimeType: "text/markdown",
+    })) }),
+  }), { title: "W3C document skill", mimeType: "text/markdown" },
+  async (uri, { skill_id }) => ({ contents: [{ uri: uri.href, mimeType: "text/markdown", text: await readSkill(skill_id) }] }));
 
   return server;
 }

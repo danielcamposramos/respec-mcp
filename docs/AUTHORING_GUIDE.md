@@ -1,13 +1,13 @@
-# ReSpec MCP LLM Authoring Guide
+# ReSpec MCP Human-Led Authoring Guide
 
 ## Purpose
 
-This guide is for LLMs and AI-assisted editors operating the `respec-mcp`
-tools. It is intended to make the MCP useful for actual W3C-style document
-authoring, not just HTML rendering.
+This guide is for authors and AI assistants operating the `respec-mcp` tools. Humans define the claims and editorial rules; assistants help express them and run the same checks available in CI. A passing check establishes only the configured checks, not W3C approval or editorial readiness.
 
 Use this guide when drafting, revising, validating, or preflighting Community
 Group reports, final reports, and standards-transition documents.
+
+For native-language collaboration and shared evidence rules, read [Shared editorial principles](EDITORIAL_PRINCIPLES.md). Other document types have their own [skills](W3C_SKILLS.md); the report guidance below applies when writing reports or specifications.
 
 ## Read First
 

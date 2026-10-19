@@ -6,6 +6,9 @@ pnpm-debug.log*
 .pnpm-store/
 dist/
 coverage/
+.respec-check/
+examples/*/reports/
+examples/*/explainer/
 .DS_Store
 .vscode/
 .idea/

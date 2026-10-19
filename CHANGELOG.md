@@ -4,6 +4,29 @@ All notable changes to this project are documented in this file. The format is
 based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this
 project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - Repository update, 2026-10-19
+
+This version is available from the repository; npm publication is separate.
+
+### Added
+
+- One-shot `respec-check` CLI with source/render checks, exit codes, JSON evidence, policy fingerprints and optional warning failures.
+- Reusable GitHub Action with annotations, a job summary and report output; CI exercises both worked examples. Reviewers need no MCP client.
+- Fourteen W3C document skills and MCP catalog/resources, with official references, appropriate tool routing and optional native-language discussion for English drafting.
+
+### Fixed
+
+- Source preflight now checks source headings and ReSpec-generated Abstract/SotD markers.
+- Checks verify the actual source/rendered document status; ambiguous source status stays pending until rendering. Scaffold overrides cannot bypass the selected status.
+- Profile resources expose full policy rather than listing summaries.
+- Local rendering serves the installed highlighter and ReSpec bundle together.
+- File containment follows existing and dangling symlinks before checking the repository boundary.
+- Updated the transitive proxy-addr dependency to its patched 2.0.8 release.
+
+### Changed
+
+- Public documentation distinguishes configured editorial checks, human review and W3C publication decisions, and documents browser execution limits.
+
 ## [0.1.0] - 2026-04-20
 
 ### Added

@@ -1,6 +1,6 @@
 import os from "node:os";
 import path from "node:path";
-import { mkdtemp, rm } from "node:fs/promises";
+import { mkdtemp, rm, symlink } from "node:fs/promises";
 import { pathToFileURL } from "node:url";
 import {
   resolveWithinRoot,
@@ -41,6 +41,16 @@ describe("security.resolveWithinRoot", () => {
 
   it("rejects null bytes", () => {
     expect(() => resolveWithinRoot(root, "file\0.txt")).toThrowError(SecurityError);
+  });
+
+  it("rejects existing and dangling symlinks outside the repository, including output ancestors", async () => {
+    const outside = await mkdtemp(path.join(os.tmpdir(), "respec-outside-"));
+    try {
+      await symlink(outside, path.join(root, "external"));
+      await symlink(path.join(outside, "new.json"), path.join(root, "dangling"));
+      expect(() => resolveWithinRoot(root, "external/new/output.json")).toThrowError(SecurityError);
+      expect(() => resolveWithinRoot(root, "dangling")).toThrowError(SecurityError);
+    } finally { await rm(outside, { recursive: true, force: true }); }
   });
 });
 

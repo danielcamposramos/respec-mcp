@@ -102,6 +102,8 @@ describe("integration: full render pipeline", () => {
     expect(result.rendered).toBeTrue();
     expect(result.output).toBeNull();
     expect(result.errors.length).toBe(0);
+    expect(result.compliance.document_status).toBe("CG-DRAFT");
+    expect(result.compliance.valid).toBeTrue();
   });
 
   it("buildSpec writes HTML to build root and reports compliance", async () => {
@@ -113,6 +115,8 @@ describe("integration: full render pipeline", () => {
     expect(result.output).toContain(path.join("reports", "build", "index.html"));
     expect(result.compliance.required_sections_missing).toEqual([]);
     expect(result.errors.length).toBe(0);
+    expect(result.compliance.document_status).toBe("CG-DRAFT");
+    expect(result.compliance.valid).toBeTrue();
   });
 
   it("preflightSpec is cheap and does not render", async () => {

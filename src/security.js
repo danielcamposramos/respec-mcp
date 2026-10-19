@@ -1,5 +1,6 @@
 import path from "node:path";
 import { pathToFileURL, fileURLToPath } from "node:url";
+import { realpathSync, lstatSync, readlinkSync } from "node:fs";
 
 const PROTOTYPE_KEYS = new Set(["__proto__", "constructor", "prototype"]);
 
@@ -34,7 +35,35 @@ export function resolveWithinRoot(root, candidate) {
     );
   }
 
+  // Check the nearest existing ancestor, including symlinks, for both reads
+  // and not-yet-created output files. Lexical containment alone is insufficient.
+  const realRoot = existingPath(absoluteRoot);
+  const realTarget = existingPath(resolved);
+  const realRelative = path.relative(realRoot, realTarget);
+  if (realRelative === ".." || realRelative.startsWith(`..${path.sep}`) || path.isAbsolute(realRelative)) {
+    throw new SecurityError(`Path "${candidate}" follows a symlink outside of the allowed repo root.`);
+  }
+
   return resolved;
+}
+
+function existingPath(candidate, links = 0) {
+  if (links > 40) throw new SecurityError("Too many symbolic links.");
+  try {
+    return realpathSync(candidate);
+  } catch (error) {
+    if (error.code !== "ENOENT") throw error;
+    try {
+      if (lstatSync(candidate).isSymbolicLink()) {
+        return existingPath(path.resolve(path.dirname(candidate), readlinkSync(candidate)), links + 1);
+      }
+    } catch (statError) {
+      if (statError.code !== "ENOENT") throw statError;
+    }
+    const parent = path.dirname(candidate);
+    if (parent === candidate) throw error;
+    return path.join(existingPath(parent, links), path.basename(candidate));
+  }
 }
 
 export function resolveSourceUrl(root, source) {

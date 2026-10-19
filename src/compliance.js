@@ -7,11 +7,12 @@ export function checkCompliance({ html, sourceText, profile }) {
     profile;
 
   const renderedReport = analyze(html || "");
-  const sourceReport = analyze(sourceText || "");
+  const sourceReport = analyze(sourceText || "", { source: true });
+  const sectionReport = html ? renderedReport : sourceReport;
 
   const requiredSectionsMissing = required_sections.filter(section => {
     const normalized = normalize(section);
-    return !renderedReport.headingsNormalized.has(normalized);
+    return !sectionReport.headingsNormalized.has(normalized);
   });
 
   const requiredLinksMissing = required_links.filter(link => {
@@ -37,7 +38,7 @@ export function checkCompliance({ html, sourceText, profile }) {
   };
 }
 
-function analyze(html) {
+function analyze(html, { source = false } = {}) {
   if (!html) {
     return {
       headingsNormalized: new Set(),
@@ -53,6 +54,12 @@ function analyze(html) {
   }
 
   const headingsNormalized = new Set();
+  // ReSpec supplies these headings during rendering. Their source sections
+  // are structural evidence; prose merely mentioning their names is not.
+  if (source) {
+    if (document.querySelector("section#abstract")) headingsNormalized.add("abstract");
+    if (document.querySelector("section#sotd")) headingsNormalized.add("status of this document");
+  }
   for (const heading of document.querySelectorAll(HEADING_SELECTOR)) {
     const clone = heading.cloneNode(true);
     for (const noise of clone.querySelectorAll(".secno, .self-link, .permalink")) {

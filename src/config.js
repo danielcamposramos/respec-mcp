@@ -24,7 +24,7 @@ export async function fileExists(filePath) {
 
 export async function loadRepoConfig(repoRoot) {
   const absoluteRoot = path.resolve(repoRoot);
-  const configPath = path.join(absoluteRoot, CONFIG_FILENAME);
+  const configPath = resolveWithinRoot(absoluteRoot, CONFIG_FILENAME);
   const hasConfig = await fileExists(configPath);
   const repoConfig = hasConfig
     ? await loadJson(configPath)

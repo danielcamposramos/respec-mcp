@@ -1,0 +1,211 @@
+{
+  "schema_version": 1,
+  "reviewed_on": "2026-10-19",
+  "scope": "Document-authoring and review workflows linked by the W3C Guidebook and Writing Effective Explainers; not a claim to cover every W3C process.",
+  "shared_guidance": "docs/EDITORIAL_PRINCIPLES.md",
+  "skills": [
+    {
+      "id": "w3c-explainer",
+      "title": "Explainers",
+      "description": "Draft or review a user-facing web feature explainer for early design discussion and TAG review.",
+      "tools": [
+        "ReSpec or Markdown",
+        "respec-check for ReSpec HTML"
+      ],
+      "sources": [
+        "https://www.w3.org/TR/explainer-explainer/"
+      ],
+      "validation": "ReSpec checks only when the source is ReSpec HTML; remaining guidance is not an automated validator."
+    },
+    {
+      "id": "w3c-technical-report",
+      "title": "Technical reports and specifications",
+      "description": "Draft or revise a W3C-style specification, Working Group report or Note using the repository's actual publication track.",
+      "tools": [
+        "ReSpec",
+        "Bikeshed",
+        "Nu HTML Checker",
+        "W3C Link Checker"
+      ],
+      "sources": [
+        "https://www.w3.org/guide/manual-of-style/",
+        "https://respec.org/docs/",
+        "https://speced.github.io/bikeshed/"
+      ],
+      "validation": "ReSpec checks only when the source is ReSpec HTML; remaining guidance is not an automated validator."
+    },
+    {
+      "id": "w3c-cg-report",
+      "title": "Community Group reports",
+      "description": "Prepare or review a Community Group draft or final report without implying W3C Recommendation status.",
+      "tools": [
+        "ReSpec CG-DRAFT / CG-FINAL",
+        "respec-check",
+        "W3C CG report publication tools"
+      ],
+      "sources": [
+        "https://www.w3.org/community/reports/reqs/"
+      ],
+      "validation": "ReSpec checks only when the source is ReSpec HTML; remaining guidance is not an automated validator."
+    },
+    {
+      "id": "w3c-charter",
+      "title": "Working and Interest Group charters",
+      "description": "Prepare a proposed W3C group charter or rechartering draft using the current official template.",
+      "tools": [
+        "W3C charter template",
+        "GitHub charter review",
+        "Chartering dashboard"
+      ],
+      "sources": [
+        "https://www.w3.org/guide/process/charter.html"
+      ],
+      "validation": "ReSpec checks only when the source is ReSpec HTML; remaining guidance is not an automated validator."
+    },
+    {
+      "id": "w3c-review-request",
+      "title": "Wide and horizontal review requests",
+      "description": "Prepare a review request and a traceable disposition of comments for W3C technical work.",
+      "tools": [
+        "GitHub review templates",
+        "W3C horizontal issue tracker",
+        "Review dashboards"
+      ],
+      "sources": [
+        "https://www.w3.org/guide/documentreview/"
+      ],
+      "validation": "ReSpec checks only when the source is ReSpec HTML; remaining guidance is not an automated validator."
+    },
+    {
+      "id": "w3c-security-privacy-review",
+      "title": "Security and privacy self-reviews",
+      "description": "Work through the W3C security/privacy questionnaire and write evidence-based considerations for a proposed feature.",
+      "tools": [
+        "W3C security/privacy questionnaire",
+        "TAG and horizontal review templates"
+      ],
+      "sources": [
+        "https://www.w3.org/TR/security-privacy-questionnaire/"
+      ],
+      "validation": "ReSpec checks only when the source is ReSpec HTML; remaining guidance is not an automated validator."
+    },
+    {
+      "id": "w3c-accessibility-review",
+      "title": "Accessibility self-reviews",
+      "description": "Prepare accessibility considerations and a FAST-based self-review for a web technology or document.",
+      "tools": [
+        "FAST checklist",
+        "APA review request",
+        "WAI evaluation resources"
+      ],
+      "sources": [
+        "https://www.w3.org/guide/documentreview/#accessibility",
+        "https://w3c.github.io/apa/fast/checklist.html"
+      ],
+      "validation": "ReSpec checks only when the source is ReSpec HTML; remaining guidance is not an automated validator."
+    },
+    {
+      "id": "w3c-i18n-review",
+      "title": "Internationalization self-reviews",
+      "description": "Prepare internationalization considerations and review material for a specification or web feature.",
+      "tools": [
+        "W3C i18n short checklist",
+        "Internationalization review tracker"
+      ],
+      "sources": [
+        "https://www.w3.org/International/techniques/developing-specs",
+        "https://www.w3.org/TR/international-specs/"
+      ],
+      "validation": "ReSpec checks only when the source is ReSpec HTML; remaining guidance is not an automated validator."
+    },
+    {
+      "id": "w3c-implementation-report",
+      "title": "Implementation and interoperability reports",
+      "description": "Prepare implementation evidence and test-result reports for a proposed standard or transition.",
+      "tools": [
+        "web-platform-tests",
+        "wpt.fyi snapshots",
+        "Repository-specific test harnesses"
+      ],
+      "sources": [
+        "https://www.w3.org/2021/04/wpt-fyi.html",
+        "https://web-platform-tests.org/"
+      ],
+      "validation": "ReSpec checks only when the source is ReSpec HTML; remaining guidance is not an automated validator."
+    },
+    {
+      "id": "w3c-cg-transition",
+      "title": "Community Group transition proposals",
+      "description": "Prepare the evidence and proposed working relationship for moving CG work to a Working Group.",
+      "tools": [
+        "CG transition guidance",
+        "Charter drafts",
+        "Contribution-history tools"
+      ],
+      "sources": [
+        "https://www.w3.org/guide/process/cg-transition.html"
+      ],
+      "validation": "ReSpec checks only when the source is ReSpec HTML; remaining guidance is not an automated validator."
+    },
+    {
+      "id": "w3c-publication",
+      "title": "Publication and transition packages",
+      "description": "Prepare a W3C technical-report publication or maturity-transition package and its supporting evidence.",
+      "tools": [
+        "W3C transition selector",
+        "Pubrules / Specberus",
+        "Echidna",
+        "W3C Link Checker"
+      ],
+      "sources": [
+        "https://www.w3.org/guide/transitions/",
+        "https://www.w3.org/pubrules/",
+        "https://github.com/w3c/echidna/wiki"
+      ],
+      "validation": "ReSpec checks only when the source is ReSpec HTML; remaining guidance is not an automated validator."
+    },
+    {
+      "id": "w3c-meeting-records",
+      "title": "Agendas and meeting minutes",
+      "description": "Prepare W3C meeting agendas or evidence-based minutes using the group's meeting tools.",
+      "tools": [
+        "AgendaBot",
+        "Zakim",
+        "RRSAgent",
+        "scribe2"
+      ],
+      "sources": [
+        "https://www.w3.org/guide/meetings/",
+        "https://w3c.github.io/scribe2/scribedoc.html"
+      ],
+      "validation": "ReSpec checks only when the source is ReSpec HTML; remaining guidance is not an automated validator."
+    },
+    {
+      "id": "w3c-workshop",
+      "title": "Workshop calls, programs and reports",
+      "description": "Prepare W3C workshop participation material, agendas and outcome reports.",
+      "tools": [
+        "W3C workshop guidance",
+        "HTML and accessibility checks"
+      ],
+      "sources": [
+        "https://www.w3.org/guide/meetings/workshops.html"
+      ],
+      "validation": "ReSpec checks only when the source is ReSpec HTML; remaining guidance is not an automated validator."
+    },
+    {
+      "id": "w3c-presentation",
+      "title": "Presentations and public explainers",
+      "description": "Prepare accessible talks and presentation material about W3C-related work for a stated audience.",
+      "tools": [
+        "W3C slide templates",
+        "Accessible-presentation guidance"
+      ],
+      "sources": [
+        "https://www.w3.org/wiki/Speaker_Resources",
+        "https://www.w3.org/Talks/Templates/b6plus-slideset.html"
+      ],
+      "validation": "ReSpec checks only when the source is ReSpec HTML; remaining guidance is not an automated validator."
+    }
+  ]
+}

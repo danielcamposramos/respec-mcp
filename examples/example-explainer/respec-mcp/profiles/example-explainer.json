@@ -1,6 +1,6 @@
 {
   "profile_id": "example-explainer",
-  "label": "Example Explainer (TAG-review ready)",
+  "label": "Example Explainer (structural example)",
   "group_type": "explainer",
   "allowed_statuses": ["unofficial", "CG-DRAFT"],
   "default_status": "unofficial",

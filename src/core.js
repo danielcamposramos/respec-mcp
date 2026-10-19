@@ -1,6 +1,7 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { toHTML } from "respec/tools/respecDocWriter.js";
+import { createHash } from "node:crypto";
+import { renderDocument } from "./render.js";
 import {
   CONFIG_FILENAME,
   DEFAULT_BUILD_ROOT,
@@ -16,8 +17,18 @@ import { checkCompliance } from "./compliance.js";
 import { resolveWithinRoot, safeMerge, sanitizeOverrides } from "./security.js";
 import { readSourceText, resolveSource } from "./source.js";
 import { applyTemplate, withJsonMirrors } from "./template.js";
+import { assessStatus, readRenderedStatus, readSourceStatus } from "./status.js";
 
 export const AUTHORING_GUIDE_FILENAME = "AUTHORING_GUIDE.md";
+
+export async function getProfile(repoRoot, profileId) {
+  const profiles = await loadProfiles(await loadRepoConfig(repoRoot));
+  const profile = profiles.find(item => item.profile_id === profileId);
+  if (!profile) throw new Error(`Profile "${profileId}" not found.`);
+  const policy = { ...profile };
+  delete policy.__path;
+  return policy;
+}
 
 export async function listProfiles(repoRoot) {
   const repoState = await loadRepoConfig(repoRoot);
@@ -54,7 +65,7 @@ export async function scaffoldSource(input, options = {}) {
   await writeFile(sourcePath, rendered, "utf-8");
 
   const compliance = checkCompliance({
-    html: rendered,
+    html: "",
     sourceText: rendered,
     profile: state.profile,
   });
@@ -65,7 +76,8 @@ export async function scaffoldSource(input, options = {}) {
     status: state.status,
     errors: [],
     warnings: [],
-    compliance: buildComplianceReport(compliance, state, [], []),
+    compliance: buildComplianceReport(compliance, state, [], [], readSourceStatus(rendered)),
+    policy: state.policy,
     resolved_profile: summarizeProfile(state.profile),
     resolved_repo_config: summarizeRepoConfig(state.repoState),
   };
@@ -100,7 +112,8 @@ export async function preflightSpec(input, options = {}) {
     rendered: false,
     errors: [],
     warnings: [],
-    compliance: buildComplianceReport(compliance, state, [], []),
+    compliance: buildComplianceReport(compliance, state, [], [], readSourceStatus(sourceText)),
+    policy: state.policy,
     resolved_profile: summarizeProfile(state.profile),
     resolved_repo_config: summarizeRepoConfig(state.repoState),
   };
@@ -135,8 +148,8 @@ async function renderAndAssess(input, options, behavior) {
 
   const errors = [];
   const warnings = [];
-  const { html, errors: rsErrors = [], warnings: rsWarnings = [] } = await toHTML(
-    fileUrl,
+  const { html, errors: rsErrors = [], warnings: rsWarnings = [] } = await renderDocument(
+    { repoRoot: state.repoRoot, absolutePath, sourceText },
     {
       timeout: options.timeout || 300000,
       useLocal: options.useLocal !== false,
@@ -173,7 +186,8 @@ async function renderAndAssess(input, options, behavior) {
     rendered: true,
     errors,
     warnings,
-    compliance: buildComplianceReport(compliance, state, errors, warnings),
+    compliance: buildComplianceReport(compliance, state, errors, warnings, readRenderedStatus(html), true),
+    policy: state.policy,
     resolved_profile: summarizeProfile(state.profile),
     resolved_repo_config: summarizeRepoConfig(state.repoState),
   };
@@ -214,7 +228,13 @@ async function resolveContext(input, options) {
     DEFAULT_STATUS;
   ensureStatusAllowed(profile, status);
 
-  return { repoRoot, repoState, profile, status };
+  const hash = text => createHash("sha256").update(text).digest("hex");
+  const policy = {
+    profile_path: path.relative(repoRoot, profile.__path),
+    profile_sha256: hash(await readFile(profile.__path)),
+    config_sha256: repoState.configPath ? hash(await readFile(repoState.configPath)) : null,
+  };
+  return { repoRoot, repoState, profile, status, requestedStatus: input.status || null, policy };
 }
 
 async function loadRepoMetadata(repoRoot, metadataSource) {
@@ -272,7 +292,7 @@ function resolveOutputPath(state, explicitOutput, absoluteSource) {
     state.repoState.config.source_root ||
     DEFAULT_SOURCE_ROOT;
 
-  const absoluteBuildRoot = resolveWithinRoot(state.repoRoot, buildRoot);
+  resolveWithinRoot(state.repoRoot, buildRoot);
   const absoluteSourceRoot = resolveWithinRoot(state.repoRoot, sourceRoot);
 
   if (absoluteSource.startsWith(`${absoluteSourceRoot}${path.sep}`)) {
@@ -290,6 +310,9 @@ function buildTemplateContext(state, metadata, rawOverrides) {
   const profileDefaults = state.profile.respec_defaults || {};
   const overrides = sanitizeOverrides(rawOverrides);
 
+  if (overrides.specStatus && overrides.specStatus !== state.status) {
+    throw new Error("Use the status input to select specStatus; overrides cannot change it.");
+  }
   const merged = safeMerge(
     {
       title: "Untitled Community Group Report",
@@ -306,24 +329,23 @@ function buildTemplateContext(state, metadata, rawOverrides) {
     },
     repoDefaults,
     profileDefaults,
-    overrides
+    overrides,
+    { specStatus: state.status }
   );
 
   return withJsonMirrors(merged);
 }
 
-function buildComplianceReport(compliance, state, errors, warnings) {
-  const profile = state.profile;
+function buildComplianceReport(compliance, state, errors, warnings, actualStatus, rendered = false) {
+  const status = assessStatus(actualStatus, state, { rendered });
   return {
     valid:
       !errors.length &&
       !compliance.required_sections_missing.length &&
       !compliance.required_links_missing.length &&
-      !compliance.forbidden_phrase_hits.length,
-    status_allowed:
-      !profile.allowed_statuses ||
-      !profile.allowed_statuses.length ||
-      profile.allowed_statuses.includes(state.status),
+      !compliance.forbidden_phrase_hits.length &&
+      !status.status_errors.length,
+    ...status,
     required_sections_missing: compliance.required_sections_missing,
     required_links_missing: compliance.required_links_missing,
     forbidden_phrase_hits: compliance.forbidden_phrase_hits,

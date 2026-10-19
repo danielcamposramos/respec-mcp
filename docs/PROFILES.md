@@ -94,3 +94,12 @@ Prototype chain access (`__proto__.something`) is blocked.
 - `forbidden_phrases`: searched in visible text content (scripts, styles,
   templates, and noscript blocks are stripped) with word-boundary matching, so
   `"commit"` does not match `"uncommittable"`.
+
+
+## Actual status and check evidence
+
+`allowed_statuses` is checked against the document's status, not just the selected default. Preflight parses a conservative literal `respecConfig` without executing JavaScript; dynamic or ambiguous configurations produce a pending check. Full validation reads ReSpec's exported initial configuration and fails if status cannot be established. An explicit requested `status` must also match. Scaffolding rejects a conflicting `overrides.specStatus`.
+
+Source checks recognize `section#abstract` and `section#sotd`, whose headings ReSpec generates. Rendered checks require the resulting headings. Pending checks make a preflight-only CLI run fail; combined mode allows rendering to resolve them. Inspect the final result rather than treating a source-only `compliance.valid` value as complete evidence.
+
+Results include the profile path and SHA-256 fingerprints of the profile and repository configuration. Review policy changes alongside document changes: a passing check under a weaker profile is not the same evidence. Required-link checks require literal anchors; a URL only in `respecConfig` does not satisfy source preflight. Phrase matching has no understanding of quotations or negation, so avoid bans that also match legitimate status boilerplate or discussion. Use a separate profile for individual proposals when the CG profile does not describe their actual status.

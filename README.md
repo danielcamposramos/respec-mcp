@@ -3,16 +3,15 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23309002.svg)](https://doi.org/10.5281/zenodo.23309002)
 
 [![CI](https://github.com/danielcamposramos/respec-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/danielcamposramos/respec-mcp/actions/workflows/ci.yml)
+[![Editorial examples](https://github.com/danielcamposramos/respec-mcp/actions/workflows/editorial-checks.yml/badge.svg)](https://github.com/danielcamposramos/respec-mcp/actions/workflows/editorial-checks.yml)
 [![npm](https://img.shields.io/npm/v/respec-mcp.svg)](https://www.npmjs.com/package/respec-mcp)
 [![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 
-A stdio **Model Context Protocol** server that wraps
-[ReSpec](https://respec.org/) rendering and adds repo-local profile
-discovery, so AI agents can scaffold, preflight, validate, and build
-W3C-style documents — Community Group reports, final reports, and
-[explainers](https://www.w3.org/TR/explainer-explainer/) for TAG early
-design review — using policies that live in the spec repository itself, not
-in the MCP server.
+**Human-led editorial checks for W3C-related documents, available through GitHub Actions, a command-line checker and MCP.** Maintainers define document rules in their repository; authors and AI assistants use the same preflight and [ReSpec](https://respec.org/) validation before review. Reviewers can inspect the result, diagnostics and policy revision directly on GitHub without installing an MCP client.
+
+The project acts as a gate for configured editorial rules: required sections and links, permitted document statuses, flagged phrases and ReSpec diagnostics. A green result establishes those checks only. It does not establish W3C endorsement, group consensus, publication authorization or the correctness of the document's claims.
+
+[Fourteen document skills](docs/W3C_SKILLS.md) cover explainers, specifications, CG reports, charters, reviews, implementation evidence, publication, meeting records, workshops and presentations. They identify the appropriate W3C tooling beyond ReSpec. Shared guidance lets authors explain ideas in their own language and receive help drafting English while preserving technical meaning and uncertainty.
 
 > **Status:** incubating. See the [inline W3C discussion](https://github.com/speced/respec/pull/5168)
 > that led to this package being extracted from ReSpec core.
@@ -27,6 +26,10 @@ server iterate on profile/policy design and security hardening independently.
 
 ## What it does
 
+- **GitHub Actions:** review-visible checks, escaped diagnostic annotations, a job summary and a JSON evidence artifact. [Add it to a repository](docs/GITHUB_ACTIONS.md).
+- **One-shot CLI:** `respec-check` runs the same checks locally and returns a meaningful exit code. [CLI usage](docs/USAGE.md#one-shot-checks-for-people-and-ci).
+- **MCP:** the existing authoring workflow remains available, with human editorial control.
+
 Five tools over stdio:
 
 | Tool                   | What it does                                                                    |
@@ -37,12 +40,16 @@ Five tools over stdio:
 | `respec_validate`      | Full ReSpec render via Puppeteer with diagnostics. No write.                    |
 | `respec_build`         | Full render and writes static HTML to the build root.                           |
 
-Two MCP resources:
+MCP resources:
 
 - `respec-mcp://authoring-guide` — guidance for LLMs producing W3C/CG reports.
 - `respec-mcp://profile/{profile_id}` — resolved profile JSON.
+- `respec-mcp://skills` — document-skill catalog and tool routing.
+- `respec-mcp://skill/{skill_id}` — one document skill with shared editorial and multilingual guidance.
 
 ## Install
+
+The new Action and checker are available from this repository. Until version 0.2.0 is published to npm, use a checkout for the new CLI (`npm ci`, then `node bin/respec-check.js --help`); the registry's older release does not include these additions.
 
 ```bash
 npm install -g respec-mcp
@@ -98,7 +105,7 @@ npx -y respec-mcp --repo-root /path/to/spec-repo
    }
    ```
 
-Two complete worked examples ship in the repo:
+Two worked examples ship in the repo. The CG fixture uses PM-KR’s real group identifier so ReSpec can resolve group metadata; its placeholder text is a demonstration, not a group publication. Replace the metadata and content when adopting it:
 
 - [`examples/example-cg/`](./examples/example-cg) — Community Group report.
 - [`examples/example-explainer/`](./examples/example-explainer) — W3C
@@ -215,8 +222,7 @@ injection from document content. This server defends against that:
 - **Path containment.** Every path input is resolved through a `resolveWithinRoot`
   check and rejected if it escapes the configured `--repo-root`.
 - **URL restriction.** `source` accepts only relative paths or `file://` URLs
-  inside the repo root. `http(s)`, `data:`, `javascript:` are rejected so
-  Puppeteer never navigates to attacker-controlled URLs.
+  inside the repo root. External source URLs are rejected. For local rendering, a temporary loopback server serves the bounded source and installed ReSpec assets; document scripts can still make network requests.
 - **No client-side `repo_root` override.** The CLI flag is the boundary; the
   tool schema does not accept `repo_root`.
 - **Prototype pollution hardening.** `overrides`, `template_defaults`, and
@@ -228,6 +234,9 @@ See [docs/SECURITY.md](./docs/SECURITY.md) for the full model.
 ## Docs
 
 - [docs/USAGE.md](./docs/USAGE.md) — CLI flags, tool recommendations, client config.
+- [docs/GITHUB_ACTIONS.md](./docs/GITHUB_ACTIONS.md) — reviewer-visible checks and their scope.
+- [docs/W3C_SKILLS.md](./docs/W3C_SKILLS.md) — document families and their appropriate tools.
+- [docs/EDITORIAL_PRINCIPLES.md](./docs/EDITORIAL_PRINCIPLES.md) — human authority, evidence limits and native-language collaboration.
 - [docs/PROFILES.md](./docs/PROFILES.md) — profile and config schema.
 - [docs/SECURITY.md](./docs/SECURITY.md) — trust boundaries and guarantees.
 - [docs/AUTHORING_GUIDE.md](./docs/AUTHORING_GUIDE.md) — LLM authoring guide
